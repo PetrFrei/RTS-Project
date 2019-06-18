@@ -36,7 +36,7 @@ public class PlaceBuilding : MonoBehaviour
                 Buildings buildingsList = new Buildings();
                 GameObject building = Instantiate(currentPrefab);
                 Building build = building.GetComponent<Building>();
-                build.enabled = true;
+                build.build= true;
                 buildingsList.buildings.Add(building);
                 Destroy(currentPrefab);
             }
