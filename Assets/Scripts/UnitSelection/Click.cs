@@ -48,9 +48,9 @@ public class Click : MonoBehaviour
             {
                 ClickOn click = hit.collider.GetComponent<ClickOn>();
 
-                if(Input.GetKey("left ctrl"))
+                if (Input.GetKey("left ctrl"))
                 {
-                    if(!click.currentlySelected)
+                    if (!click.currentlySelected)
                     {
                         selectedObjects.Add(hit.collider.gameObject);
                         click.currentlySelected = true;
@@ -69,12 +69,20 @@ public class Click : MonoBehaviour
                     selectedObjects.Add(hit.collider.gameObject);
                     click.currentlySelected = true;
                     click.OnClick();
+                    Debug.Log(selectedObjects[0]);
                 }
+            }
+            else
+            {
+                ClearSelection();
             }
         }
         else if(Input.GetMouseButtonDown(1))
         {
-            MoveObjects();
+            if(selectedObjects.Count>0)
+            {
+                MoveObjects();
+            }
         }
         if(Input.GetMouseButtonUp(0))
         {
@@ -89,8 +97,7 @@ public class Click : MonoBehaviour
     void MoveObjects()
     {
         if(Input.GetMouseButtonDown(1))
-        {            
-
+        {
             Ray mousePos = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(mousePos,out rayh,Mathf.Infinity,Ground))
@@ -176,7 +183,7 @@ public class Click : MonoBehaviour
     }
 
 
-    void ClearSelection()
+    private void ClearSelection()
     {
         if (selectedObjects.Count > 0)
         {
@@ -186,6 +193,7 @@ public class Click : MonoBehaviour
                 obj.GetComponent<ClickOn>().OnClick();
             }
             selectedObjects.Clear();
+            Debug.Log("clear");
         }
     }
 }
