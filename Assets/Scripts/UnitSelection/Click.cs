@@ -13,6 +13,14 @@ public class Click : MonoBehaviour
 
     private List<GameObject> selectedMoveObjects;
 
+    private List<UnitCollection> collection;
+
+    private List<UnitCollection> deleteObjects;
+
+    private List<Vector3> points;
+
+    private int index = -1;
+
     [HideInInspector]
     public List<GameObject> selectableObjects;
 
@@ -29,6 +37,9 @@ public class Click : MonoBehaviour
         selectedObjects = new List<GameObject>();
         selectableObjects = new List<GameObject>();
         selectedMoveObjects = new List<GameObject>();
+        collection = new List<UnitCollection>();
+        points = new List<Vector3>();
+        deleteObjects = new List<UnitCollection>();
     }
 
     // Update is called once per frame
@@ -90,6 +101,7 @@ public class Click : MonoBehaviour
             if(mousePos1!=mousePos2)
             {
                 SelectObjects();
+                rayh.point = Vector3.zero;
             }
         }
     }
@@ -134,6 +146,47 @@ public class Click : MonoBehaviour
                 unit.isOnPlace = true;
             }
         }
+        foreach (UnitCollection coll in collection)
+        {
+            if (coll.units.Count > 0)
+            {
+                bool areOnPlace = true;
+                int i = collection.IndexOf(coll);
+                foreach (GameObject objct in coll.units)
+                {
+                    OperatingUnit unit = objct.GetComponent<OperatingUnit>();
+                    rb = objct.GetComponent<Rigidbody>();
+                    elapsedTime += Time.deltaTime;
+                    float distance = Vector3.Distance(objct.transform.position, points[i]);
+                    unit.lastPos = objct.transform.position;
+                    if (!unit.isOnPlace)
+                    {
+                        objct.transform.position = Vector3.MoveTowards(objct.transform.position, points[i], Time.deltaTime);
+                    }
+
+                    if (distance < 1f)
+                    {
+                        unit.isOnPlace = true;
+                    }
+                    if(!unit.isOnPlace)
+                    {
+                        areOnPlace = false;
+                    }
+
+                }
+                if(areOnPlace)
+                {
+                    deleteObjects.Add(coll);
+                }
+
+            }
+        }
+        foreach(UnitCollection col in deleteObjects)
+        {
+            collection.Remove(col);
+            index--;
+        }
+        deleteObjects.Clear();
     }
 
     void SelectObjects()
@@ -171,7 +224,8 @@ public class Click : MonoBehaviour
             }
 
         }
-        if(remObjects.Count>0)
+        
+        if (remObjects.Count>0)
         {
             foreach(GameObject rem in remObjects)
             {
@@ -180,11 +234,33 @@ public class Click : MonoBehaviour
 
             remObjects.Clear();
         }
+        foreach (UnitCollection col in collection)
+        {
+            foreach (GameObject obj in col.units)
+            {
+                foreach (GameObject checkObj in selectedMoveObjects)
+                {
+                    if (obj == checkObj)
+                    {
+                        remObjects.Add(checkObj);
+                    }
+                }
+            }
+        }
+        foreach(UnitCollection collect in collection)
+        {
+            foreach (GameObject remO in remObjects)
+            {
+                collect.units.Remove(remO);
+            }
+        }
+        
     }
 
 
     private void ClearSelection()
     {
+        bool canAdd = false;
         if (selectedObjects.Count > 0)
         {
             foreach (GameObject obj in selectedObjects)
@@ -193,7 +269,27 @@ public class Click : MonoBehaviour
                 obj.GetComponent<ClickOn>().OnClick();
             }
             selectedObjects.Clear();
-            Debug.Log("clear");
+            foreach(GameObject obj in selectedMoveObjects)
+            {
+                OperatingUnit unit = obj.GetComponent<OperatingUnit>();
+                if (!unit.isOnPlace)
+                {
+                    collection.Add(new UnitCollection());
+                    canAdd = true;
+                    index++;
+                    break;
+                }
+            }
+
+            foreach(GameObject addObj in selectedMoveObjects)
+            {
+                if(canAdd)
+                {
+                    collection[index].units.Add(addObj);
+                }
+            }
+            points.Add(rayh.point);
+            selectedMoveObjects.Clear();
         }
     }
 }

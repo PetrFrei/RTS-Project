@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Building
+  - UI
+  - Ground
+  - TownHall
+  - Mine
+  - Worker
   layers:
   - Default
   - TransparentFX

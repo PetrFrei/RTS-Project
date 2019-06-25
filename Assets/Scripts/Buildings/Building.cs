@@ -17,9 +17,10 @@ public class Building : MonoBehaviour
     private void Start()
     {
         healthBar.fillAmount = 0;
+        build = true;
     }
 
-    public void Update()
+    public virtual void Update()
     {
         if(build)
         {

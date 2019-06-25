@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,15 +12,24 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
+    public Text goldDisplay,woodDisplay,meatDisplay;
+
     private void Awake()
     {
         if(instance!=null && instance!=this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
         else
         {
             instance = this;
         }
+    }
+
+    private void Update()
+    {
+        goldDisplay.text = gold.ToString();
+        woodDisplay.text = wood.ToString();
+        meatDisplay.text = meat.ToString();
     }
 }

@@ -22,7 +22,7 @@ public class TrainUnit : Process
         {
             manag.gold -= goldCost;
             manag.wood -= woodCost;
-            manag.meat++;   
+            manag.meat++;
             quantity++;
         }
     }
@@ -31,7 +31,7 @@ public class TrainUnit : Process
     {
         timeToProcess = 2f;
         GameObject unit = Instantiate(prefab);
-        unit.transform.position = transform.position;
+        unit.transform.position = gameObject.transform.position;
         unit.name = "Peasant " + number;
         number++;
     }

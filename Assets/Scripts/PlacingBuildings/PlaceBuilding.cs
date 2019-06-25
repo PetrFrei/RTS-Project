@@ -9,7 +9,11 @@ public class PlaceBuilding : MonoBehaviour
 
     private GameObject currentPrefab;
 
+    private GameObject buildPrefab;
+
     private Vector3 mOffset;
+
+    public LayerMask mask;
 
     private void Start()
     {
@@ -22,6 +26,11 @@ public class PlaceBuilding : MonoBehaviour
         {
             case 0:
                 currentPrefab = Instantiate(prefab[0]);
+                buildPrefab = prefab[0];
+                break;
+            case 1:
+                currentPrefab = Instantiate(prefab[1]);
+                buildPrefab = prefab[1];
                 break;
         }
     }
@@ -34,9 +43,7 @@ public class PlaceBuilding : MonoBehaviour
             if(Input.GetMouseButtonDown(0))
             {
                 Buildings buildingsList = new Buildings();
-                GameObject building = Instantiate(currentPrefab);
-                Building build = building.GetComponent<Building>();
-                build.build= true;
+                GameObject building = Instantiate(buildPrefab);
                 buildingsList.buildings.Add(building);
                 Destroy(currentPrefab);
             }
@@ -48,6 +55,7 @@ public class PlaceBuilding : MonoBehaviour
     {
         Vector3 mousePos = MousePos();
         currentPrefab.transform.position = mousePos;
+        buildPrefab.transform.position = mousePos;
     }
 
     private Vector3 MousePos()
@@ -55,7 +63,7 @@ public class PlaceBuilding : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if(Physics.Raycast(ray,out hit))
+        if(Physics.Raycast(ray,out hit,mask))
         {
             return hit.point;
         }
